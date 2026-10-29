@@ -1,0 +1,19 @@
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# ---- 打包产物 ----
+build/
+dist/
+
+# ---- 临时文件 ----
+_*.py
+_*.png
+*.log
+
+# ---- 编辑器 ----
+.vscode/
+.idea/
