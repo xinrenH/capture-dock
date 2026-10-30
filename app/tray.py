@@ -8,20 +8,24 @@ from .bar_window import make_icon, fmt_remind
 
 
 class TrayController:
-    def __init__(self, window, app: QApplication) -> None:
+    def __init__(self, window, app: QApplication, toggle_mode=None, show_bar=None) -> None:
         self.window = window
         self.app = app
+        self.toggle_mode = toggle_mode or (lambda: None)
+        self.show_bar = show_bar or window.show_capture
         self.tray = QSystemTrayIcon(make_icon(), window)
         self.tray.setToolTip("CaptureDock")
         self._build_menu()
         self.tray.activated.connect(self._on_activated)
-        self.tray.messageClicked.connect(self.window.show_capture)
+        self.tray.messageClicked.connect(lambda: self.show_bar())
         window.count_changed.connect(self._on_count)
 
     def _build_menu(self) -> None:
         m = QMenu()
         m.addAction(QAction("呼出捕获  Ctrl+Shift+Space", m,
-                            triggered=self.window.show_capture))
+                            triggered=lambda: self.show_bar()))
+        m.addAction(QAction("切换桌宠 / 数据条  Ctrl+Shift+M", m,
+                            triggered=lambda: self.toggle_mode()))
         m.addSeparator()
 
         self.act_show = QAction("显示 / 隐藏窗口", m, triggered=self._toggle_show)
@@ -63,11 +67,11 @@ class TrayController:
         if self.window.isVisible():
             self.window.hide()
         else:
-            self.window.show_capture()
+            self.show_bar()
 
     def _on_activated(self, reason) -> None:
         if reason == QSystemTrayIcon.DoubleClick:
-            self.window.show_capture()
+            self.show_bar()
 
     def _on_count(self, n: int) -> None:
         self.tray.setToolTip(f"CaptureDock · 未完成 {n}")

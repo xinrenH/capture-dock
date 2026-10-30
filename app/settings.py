@@ -16,6 +16,8 @@ DEFAULTS = {
     "reviewTime": "18:00",
     "window": None,           # [x, y, w, h]
     "dataDir": "",            # 自定义数据目录，空 = %APPDATA%\CaptureDock
+    "petPos": None,           # [x, y] 桌宠位置
+    "petLocked": False,       # 桌宠锁定（禁止拖动）
 }
 
 
