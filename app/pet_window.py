@@ -346,7 +346,12 @@ class PetWindow(QWidget):
     # ---------- 显示 ----------
     def show_pet(self) -> None:
         self._restore_pos()
-        self._last_open = self.db.open_count()
+        open_n = self.db.open_count()
+        # 隐藏期间新增过任务 → 跳一下
+        if self._snapshot_open is not None and open_n > self._snapshot_open:
+            self.play("new_task", 0.9)
+        self._snapshot_open = open_n
+        self._last_open = open_n
         self.show()
         self.raise_()
         self._check_base()
@@ -356,3 +361,5 @@ class PetWindow(QWidget):
         self._bubble_text = ""
         self.bubble.hide()
         super().hideEvent(e)
+
+    _snapshot_open: int | None = None
